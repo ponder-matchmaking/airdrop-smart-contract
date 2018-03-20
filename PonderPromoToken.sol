@@ -1,15 +1,109 @@
+pragma solidity ^0.4.16;
+/*
+ * Abstract Token Smart Contract.  Copyright © 2017 by ABDK Consulting.
+ * Author: Mikhail Vladimirov <mikhail.vladimirov@gmail.com>
+ */
+
+
+/**
+ * ERC-20 standard token interface, as defined
+ * <a href="http://github.com/ethereum/EIPs/issues/20">here</a>.
+ */
+contract Token {
+  /**
+   * Get total number of tokens in circulation.
+   *
+   * @return total number of tokens in circulation
+   */
+  function totalSupply () public constant returns (uint256 supply);
+
+  /**
+   * Get number of tokens currently belonging to given owner.
+   *
+   * @param _owner address to get number of tokens currently belonging to the
+   *        owner of
+   * @return number of tokens currently belonging to the owner of given address
+   */
+  function balanceOf (address _owner) public constant returns (uint256 balance);
+
+  /**
+   * Transfer given number of tokens from message sender to given recipient.
+   *
+   * @param _to address to transfer tokens to the owner of
+   * @param _value number of tokens to transfer to the owner of given address
+   * @return true if tokens were transferred successfully, false otherwise
+   */
+  function transfer (address _to, uint256 _value) public returns (bool success);
+
+  /**
+   * Transfer given number of tokens from given owner to given recipient.
+   *
+   * @param _from address to transfer tokens from the owner of
+   * @param _to address to transfer tokens to the owner of
+   * @param _value number of tokens to transfer from given owner to given
+   *        recipient
+   * @return true if tokens were transferred successfully, false otherwise
+   */
+  function transferFrom (address _from, address _to, uint256 _value)
+  public returns (bool success);
+
+  /**
+   * Allow given spender to transfer given number of tokens from message sender.
+   *
+   * @param _spender address to allow the owner of to transfer tokens from
+   *        message sender
+   * @param _value number of tokens to allow to transfer
+   * @return true if token transfer was successfully approved, false otherwise
+   */
+  function approve (address _spender, uint256 _value) public returns (bool success);
+
+  /**
+   * Tell how many tokens given spender is currently allowed to transfer from
+   * given owner.
+   *
+   * @param _owner address to get number of tokens allowed to be transferred
+   *        from the owner of
+   * @param _spender address to get number of tokens allowed to be transferred
+   *        by the owner of
+   * @return number of tokens given spender is currently allowed to transfer
+   *         from given owner
+   */
+  function allowance (address _owner, address _spender) constant
+  public returns (uint256 remaining);
+
+  /**
+   * Logged when tokens were transferred from one owner to another.
+   *
+   * @param _from address of the owner, tokens were transferred from
+   * @param _to address of the owner, tokens were transferred to
+   * @param _value number of tokens transferred
+   */
+  event Transfer (address indexed _from, address indexed _to, uint256 _value);
+
+  /**
+   * Logged when owner approved his tokens to be transferred by some spender.
+   *
+   * @param _owner owner who approved his tokens to be transferred
+   * @param _spender spender who were allowed to transfer the tokens belonging
+   *        to the owner
+   * @param _value number of tokens belonging to the owner, approved to be
+   *        transferred by the spender
+   */
+  event Approval (
+    address indexed _owner, address indexed _spender, uint256 _value);
+}
 /*
  * Safe Math Smart Contract.  Copyright © 2016–2017 by ABDK Consulting.
  * Author: Mikhail Vladimirov <mikhail.vladimirov@gmail.com>
  */
-pragma solidity ^0.4.20;
+
 
 /**
  * Provides methods to safely add, subtract and multiply uint256 numbers.
  */
 contract SafeMath {
   uint256 constant private MAX_UINT256 =
-    0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+    0xFF;
 
   /**
    * Add two uint256 values, throw in case of overflow.
@@ -54,127 +148,12 @@ contract SafeMath {
     return x * y;
   }
 }
-/*
- * EIP-20 Standard Token Smart Contract Interface.
- * Copyright © 2016–2018 by ABDK Consulting.
- * Author: Mikhail Vladimirov <mikhail.vladimirov@gmail.com>
- */
-
-/**
- * ERC-20 standard token interface, as defined
- * <a href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md">here</a>.
- */
-contract Token {
-  /**
-   * Get total number of tokens in circulation.
-   *
-   * @return total number of tokens in circulation
-   */
-  function totalSupply () public view returns (uint256 supply);
-
-  /**
-   * Get number of tokens currently belonging to given owner.
-   *
-   * @param _owner address to get number of tokens currently belonging to the
-   *        owner of
-   * @return number of tokens currently belonging to the owner of given address
-   */
-  function balanceOf (address _owner) public view returns (uint256 balance);
-
-  /**
-   * Transfer given number of tokens from message sender to given recipient.
-   *
-   * @param _to address to transfer tokens to the owner of
-   * @param _value number of tokens to transfer to the owner of given address
-   * @return true if tokens were transferred successfully, false otherwise
-   */
-  function transfer (address _to, uint256 _value)
-  public returns (bool success);
-
-  /**
-   * Transfer given number of tokens from given owner to given recipient.
-   *
-   * @param _from address to transfer tokens from the owner of
-   * @param _to address to transfer tokens to the owner of
-   * @param _value number of tokens to transfer from given owner to given
-   *        recipient
-   * @return true if tokens were transferred successfully, false otherwise
-   */
-  function transferFrom (address _from, address _to, uint256 _value)
-  public returns (bool success);
-
-  /**
-   * Allow given spender to transfer given number of tokens from message sender.
-   *
-   * @param _spender address to allow the owner of to transfer tokens from
-   *        message sender
-   * @param _value number of tokens to allow to transfer
-   * @return true if token transfer was successfully approved, false otherwise
-   */
-  function approve (address _spender, uint256 _value)
-  public returns (bool success);
-
-  /**
-   * Tell how many tokens given spender is currently allowed to transfer from
-   * given owner.
-   *
-   * @param _owner address to get number of tokens allowed to be transferred
-   *        from the owner of
-   * @param _spender address to get number of tokens allowed to be transferred
-   *        by the owner of
-   * @return number of tokens given spender is currently allowed to transfer
-   *         from given owner
-   */
-  function allowance (address _owner, address _spender)
-  public view returns (uint256 remaining);
-
-  /**
-   * Logged when tokens were transferred from one owner to another.
-   *
-   * @param _from address of the owner, tokens were transferred from
-   * @param _to address of the owner, tokens were transferred to
-   * @param _value number of tokens transferred
-   */
-  event Transfer (address indexed _from, address indexed _to, uint256 _value);
-
-  /**
-   * Logged when owner approved his tokens to be transferred by some spender.
-   *
-   * @param _owner owner who approved his tokens to be transferred
-   * @param _spender spender who were allowed to transfer the tokens belonging
-   *        to the owner
-   * @param _value number of tokens belonging to the owner, approved to be
-   *        transferred by the spender
-   */
-  event Approval (
-    address indexed _owner, address indexed _spender, uint256 _value);
-}/*
- * Address Set Smart Contract Interface.
- * Copyright © 2017–2018 by ABDK Consulting.
- * Author: Mikhail Vladimirov <mikhail.vladimirov@gmail.com>
- */
-
-/**
- * Address Set smart contract interface.
- */
-contract AddressSet {
-  /**
-   * Check whether address set contains given address.
-   *
-   * @param _address address to check
-   * @return true if address set contains given address, false otherwise
-   */
-  function contains (address _address) public view returns (bool);
-}
-/*
- * Abstract Token Smart Contract.  Copyright © 2017 by ABDK Consulting.
- * Author: Mikhail Vladimirov <mikhail.vladimirov@gmail.com>
- */
-
 /**
  * Abstract Token Smart Contract that could be used as a base contract for
  * ERC-20 token contracts.
  */
+
+
 contract AbstractToken is Token, SafeMath {
   /**
    * Create new Abstract Token contract.
@@ -190,7 +169,7 @@ contract AbstractToken is Token, SafeMath {
    *        owner of
    * @return number of tokens currently belonging to the owner of given address
    */
-  function balanceOf (address _owner) public view returns (uint256 balance) {
+  function balanceOf (address _owner) public constant returns (uint256 balance) {
     return accounts [_owner];
   }
 
@@ -201,12 +180,10 @@ contract AbstractToken is Token, SafeMath {
    * @param _value number of tokens to transfer to the owner of given address
    * @return true if tokens were transferred successfully, false otherwise
    */
-  function transfer (address _to, uint256 _value)
-  public returns (bool success) {
-    uint256 fromBalance = accounts [msg.sender];
-    if (fromBalance < _value) return false;
+  function transfer (address _to, uint256 _value) public returns (bool success) {
+    if (accounts [msg.sender] < _value) return false;
     if (_value > 0 && msg.sender != _to) {
-      accounts [msg.sender] = safeSub (fromBalance, _value);
+      accounts [msg.sender] = safeSub (accounts [msg.sender], _value);
       accounts [_to] = safeAdd (accounts [_to], _value);
     }
     Transfer (msg.sender, _to, _value);
@@ -224,16 +201,14 @@ contract AbstractToken is Token, SafeMath {
    */
   function transferFrom (address _from, address _to, uint256 _value)
   public returns (bool success) {
-    uint256 spenderAllowance = allowances [_from][msg.sender];
-    if (spenderAllowance < _value) return false;
-    uint256 fromBalance = accounts [_from];
-    if (fromBalance < _value) return false;
+    if (allowances [_from][msg.sender] < _value) return false;
+    if (accounts [_from] < _value) return false;
 
     allowances [_from][msg.sender] =
-      safeSub (spenderAllowance, _value);
+      safeSub (allowances [_from][msg.sender], _value);
 
     if (_value > 0 && _from != _to) {
-      accounts [_from] = safeSub (fromBalance, _value);
+      accounts [_from] = safeSub (accounts [_from], _value);
       accounts [_to] = safeAdd (accounts [_to], _value);
     }
     Transfer (_from, _to, _value);
@@ -248,8 +223,7 @@ contract AbstractToken is Token, SafeMath {
    * @param _value number of tokens to allow to transfer
    * @return true if token transfer was successfully approved, false otherwise
    */
-  function approve (address _spender, uint256 _value)
-  public returns (bool success) {
+  function approve (address _spender, uint256 _value) public returns (bool success) {
     allowances [msg.sender][_spender] = _value;
     Approval (msg.sender, _spender, _value);
 
@@ -267,8 +241,8 @@ contract AbstractToken is Token, SafeMath {
    * @return number of tokens given spender is currently allowed to transfer
    *         from given owner
    */
-  function allowance (address _owner, address _spender)
-  public view returns (uint256 remaining) {
+  function allowance (address _owner, address _spender) public constant
+  returns (uint256 remaining) {
     return allowances [_owner][_spender];
   }
 
@@ -276,49 +250,38 @@ contract AbstractToken is Token, SafeMath {
    * Mapping from addresses of token holders to the numbers of tokens belonging
    * to these token holders.
    */
-  mapping (address => uint256) internal accounts;
+  mapping (address => uint256) accounts;
 
   /**
    * Mapping from addresses of token holders to the mapping of addresses of
    * spenders to the allowances set by these token holders to these spenders.
    */
-  mapping (address => mapping (address => uint256)) internal allowances;
+  mapping (address => mapping (address => uint256)) private allowances;
 }
-/*
- * Abstract Virtual Token Smart Contract.
- * Copyright © 2017–2018 by ABDK Consulting.
- * Author: Mikhail Vladimirov <mikhail.vladimirov@gmail.com>
- */
-
-
 /**
- * Abstract Token Smart Contract that could be used as a base contract for
- * ERC-20 token contracts supporting virtual balance.
+ * Ponder token smart contract.
  */
-contract AbstractVirtualToken is AbstractToken {
+
+
+contract PonderAirdropToken is AbstractToken {
   /**
-   * Maximum number of real (i.e. non-virtual) tokens in circulation (2^255-1).
+   * Address of the owner of this smart contract.
    */
-  uint256 constant MAXIMUM_TOKENS_COUNT =
-    0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+  address private owner;
 
   /**
-   * Mask used to extract real balance of an account (2^255-1).
+   * True if tokens transfers are currently frozen, false otherwise.
    */
-  uint256 constant BALANCE_MASK =
-    0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+  bool frozen = false;
 
   /**
-   * Mask used to extract "materialized" flag of an account (2^255).
+   * Create new Ponder token smart contract, with given number of tokens issued
+   * and given to msg.sender, and make msg.sender the owner of this smart
+   * contract.
    */
-  uint256 constant MATERIALIZED_FLAG_MASK =
-    0x8000000000000000000000000000000000000000000000000000000000000000;
-
-  /**
-   * Create new Abstract Virtual Token contract.
-   */
-  function AbstractVirtualToken () public AbstractToken () {
-    // Do nothing
+  function PonderAirdropToken () public {
+    owner = msg.sender;
+    accounts [msg.sender] = totalSupply();
   }
 
   /**
@@ -326,20 +289,35 @@ contract AbstractVirtualToken is AbstractToken {
    *
    * @return total number of tokens in circulation
    */
-  function totalSupply () public view returns (uint256 supply) {
-    return tokensCount;
+  function totalSupply () public constant returns (uint256 supply) {
+    return 0;
   }
 
   /**
-   * Get number of tokens currently belonging to given owner.
+   * Get name of this token.
    *
-   * @param _owner address to get number of tokens currently belonging to the
-   *        owner of
-   * @return number of tokens currently belonging to the owner of given address
+   * @return name of this token
    */
-  function balanceOf (address _owner) public view returns (uint256 balance) {
-    return safeAdd (
-      accounts [_owner] & BALANCE_MASK, getVirtualBalance (_owner));
+  function name () public pure returns (string result) {
+    return "Ponder Airdrop Token";
+  }
+
+  /**
+   * Get symbol of this token.
+   *
+   * @return symbol of this token
+   */
+  function symbol () public pure returns (string result) {
+    return "PONA";
+  }
+
+  /**
+   * Get number of decimals for this token.
+   *
+   * @return number of decimals for this token
+   */
+  function decimals () public pure returns (uint256 result) {
+    return 0;
   }
 
   /**
@@ -349,13 +327,9 @@ contract AbstractVirtualToken is AbstractToken {
    * @param _value number of tokens to transfer to the owner of given address
    * @return true if tokens were transferred successfully, false otherwise
    */
-  function transfer (address _to, uint256 _value)
-  public returns (bool success) {
-    if (_value > balanceOf (msg.sender)) return false;
-    else {
-      materializeBalanceIfNeeded (msg.sender, _value);
-      return AbstractToken.transfer (_to, _value);
-    }
+  function transfer (address _to, uint256 _value) public returns (bool success) {
+    if (frozen) return false;
+    else return AbstractToken.transfer (_to, _value);
   }
 
   /**
@@ -368,215 +342,84 @@ contract AbstractVirtualToken is AbstractToken {
    * @return true if tokens were transferred successfully, false otherwise
    */
   function transferFrom (address _from, address _to, uint256 _value)
-  public returns (bool success) {
-    if (_value > allowance (_from, msg.sender)) return false;
-    if (_value > balanceOf (_from)) return false;
-    else {
-      materializeBalanceIfNeeded (_from, _value);
-      return AbstractToken.transferFrom (_from, _to, _value);
-    }
+    public returns (bool success) {
+    if (frozen) return false;
+    else return AbstractToken.transferFrom (_from, _to, _value);
   }
 
   /**
-   * Get virtual balance of the owner of given address.
+   * Change how many tokens given spender is allowed to transfer from message
+   * spender.  In order to prevent double spending of allowance, this method
+   * receives assumed current allowance value as an argument.  If actual
+   * allowance differs from an assumed one, this method just returns false.
    *
-   * @param _owner address to get virtual balance for the owner of
-   * @return virtual balance of the owner of given address
+   * @param _spender address to allow the owner of to transfer tokens from
+   *        message sender
+   * @param _currentValue assumed number of tokens currently allowed to be
+   *        transferred
+   * @param _newValue number of tokens to allow to transfer
+   * @return true if token transfer was successfully approved, false otherwise
    */
-  function virtualBalanceOf (address _owner)
-  internal view returns (uint256 _virtualBalance);
-
-  /**
-   * Calculate virtual balance of the owner of given address taking into account
-   * materialized flag and total number of real tokens already in circulation.
-   */
-  function getVirtualBalance (address _owner)
-  private view returns (uint256 _virtualBalance) {
-    if (accounts [_owner] & MATERIALIZED_FLAG_MASK != 0) return 0;
-    else {
-      _virtualBalance = virtualBalanceOf (_owner);
-      uint256 maxVirtualBalance = safeSub (MAXIMUM_TOKENS_COUNT, tokensCount);
-      if (_virtualBalance > maxVirtualBalance)
-        _virtualBalance = maxVirtualBalance;
-    }
+  function approve (address _spender, uint256 _currentValue, uint256 _newValue)
+    public returns (bool success) {
+    if (allowance (msg.sender, _spender) == _currentValue)
+      return approve (_spender, _newValue);
+    else return false;
   }
 
   /**
-   * Materialize virtual balance of the owner of given address if this will help
-   * to transfer given number of tokens from it.
+   * Set new owner for the smart contract.
+   * May only be called by smart contract owner.
    *
-   * @param _owner address to materialize virtual balance of
-   * @param _value number of tokens to be transferred
+   * @param _newOwner address of new owner of the smart contract
    */
-  function materializeBalanceIfNeeded (address _owner, uint256 _value) private {
-    uint256 storedBalance = accounts [_owner];
-    if (storedBalance & MATERIALIZED_FLAG_MASK == 0) {
-      // Virtual balance is not materialized yet
-      if (_value > storedBalance) {
-        // Real balance is not enough
-        uint256 virtualBalance = getVirtualBalance (_owner);
-        require (safeSub (_value, storedBalance) <= virtualBalance);
-        accounts [_owner] = MATERIALIZED_FLAG_MASK |
-          safeAdd (storedBalance, virtualBalance);
-        tokensCount = safeAdd (tokensCount, virtualBalance);
-      }
-    }
-  }
-
-  /**
-   * Number of real (i.e. non-virtual) tokens in circulation.
-   */
-  uint256 internal tokensCount;
-}
-/*
- * Ponder Promo Token Smart Contract.  Copyright © 2018 by ABDK Consulting.
- * Author: Mikhail Vladimirov <mikhail.vladimirov@gmail.com>
- */
-
-/**
- * Ponder Promo Tokem Smart Contract.
- */
-contract PonderPromoToken is AbstractVirtualToken {
-  /**
-   * Number of virtual tokens to assign to the owners of addresses from given
-   * address set.
-   */
-  uint256 private constant VIRTUAL_COUNT = 1;
-
-  /**
-   * Create PonderPromoToken smart contract with given address set.
-   *
-   * @param _addressSet address set to use
-   */
-  function PonderPromoToken (AddressSet _addressSet)
-  public AbstractVirtualToken () {
-    owner = msg.sender;
-    addressSet = _addressSet;
-  }
-
-  /**
-   * Get name of this token.
-   *
-   * @return name of this token
-   */
-  function name () public pure returns (string) {
-    return "Ponder Airdrop Token";
-  }
-
-  /**
-   * Get symbol of this token.
-   *
-   * @return symbol of this token
-   */
-  function symbol () public pure returns (string) {
-    return "PONA";
-  }
-
-  /**
-   * Get number of decimals for this token.
-   *
-   * @return number of decimals for this token
-   */
-  function decimals () public pure returns (uint8) {
-    return 0;
-  }
-
-  /**
-   * Notify owners about their virtual balances.
-   *
-   * @param _owners addresses of the owners to be notified
-   */
-  function massNotify (address [] _owners) public {
-    require (msg.sender == owner);
-    uint256 count = _owners.length;
-    for (uint256 i = 0; i < count; i++)
-      Transfer (address (0), _owners [i], VIRTUAL_COUNT);
-  }
-
-  /**
-   * Kill this smart contract.
-   */
-  function kill () public {
-    require (msg.sender == owner);
-    selfdestruct (owner);
-  }
-
-  /**
-   * Change owner of the smart contract.
-   *
-   * @param _owner address of a new owner of the smart contract
-   */
-  function changeOwner (address _owner) public {
+  function setOwner (address _newOwner) public {
     require (msg.sender == owner);
 
-    owner = _owner;
+    owner = _newOwner;
   }
 
   /**
-   * Get virtual balance of the owner of given address.
-   *
-   * @param _owner address to get virtual balance for the owner of
-   * @return virtual balance of the owner of given address
+   * Freeze token transfers.
+   * May only be called by smart contract owner.
    */
-  function virtualBalanceOf (address _owner)
-  internal view returns (uint256 _virtualBalance) {
-    return addressSet.contains (_owner) ? VIRTUAL_COUNT : 0;
+  function freezeTransfers () public {
+    require (msg.sender == owner);
+
+    if (!frozen) {
+      frozen = true;
+      Freeze ();
+    }
   }
 
   /**
-   * Address of the owner of this smart contract.
+   * Unfreeze token transfers.
+   * May only be called by smart contract owner.
    */
-  address internal owner;
+  function unfreezeTransfers () public {
+    require (msg.sender == owner);
+
+    if (frozen) {
+      frozen = false;
+      Unfreeze ();
+    }
+  }
 
   /**
-   * Address set of addresses that are eligible for initial balance.
+   * Logged when token transfers were frozen.
    */
-  AddressSet internal addressSet;
-}
+  event Freeze ();
 
-
-
-/**
- * Address Set smart contract for PONA. This should be deployed separately
- * and address should be used to create the main PONA token contract.
- */
-contract PONA_AddressSet is AddressSet {
-    address owner;
-    mapping (address => bool) addresses;
-    
-    function PONA_AddressSet () public {
-        owner = msg.sender;
-    }
-    
-    /**
-     * Change owner of the smart contract.
-     *
-     * @param _owner address of a new owner of the smart contract
-     */
-    function changeOwner (address _owner) public {
-        require (msg.sender == owner);
-        owner = _owner;
-    }
+  /**
+   * Logged when token transfers were unfrozen.
+   */
+  event Unfreeze ();
   
-    function setAddress(address _address, bool value) {
-        require (msg.sender == owner);
-        addresses[_address] = value;
+  function airdrop(address [] _addresses, uint256 [] values) public {
+    require (msg.sender == owner);
+    require (_addresses.length == values.length);
+    for (uint24 i = 0; i < _addresses.length; i++){
+      accounts[_addresses[i]] = values[i];
     }
-    
-    function setAddresses(address [] _addresses, bool value){
-        require (msg.sender == owner);
-        for (uint256 i = 0; i < _addresses.length; i++){
-            addresses[_addresses[i]] = value;
-        }
-    }
-    
-    /**
-     * Check whether address set contains given address.
-     *
-     * @param _address address to check
-     * @return true if address set contains given address, false otherwise
-     */
-    function contains (address _address) public view returns (bool){
-        return addresses[_address];
-    }
+  }
 }
