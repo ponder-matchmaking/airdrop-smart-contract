@@ -155,7 +155,7 @@ contract AbstractToken is Token, SafeMath {
   /**
    * Create new Abstract Token contract.
    */
-  function AbstractToken () public {
+  constructor () public {
     // Do nothing
   }
 
@@ -195,6 +195,7 @@ contract AbstractToken is Token, SafeMath {
   function transfer (address _to, uint256 _value) public returns (bool success) {
     require (transferrableBalanceOf(msg.sender) >= _value);
     if (_value > 0 && msg.sender != _to) {
+      accounts [msg.sender] = safeSub (accounts [msg.sender], _value);
       accounts [_to] = safeAdd (accounts [_to], _value);
     }
     emit Transfer (msg.sender, _to, _value);
@@ -300,7 +301,7 @@ contract PonderAirdropToken is AbstractToken {
    * and given to msg.sender, and make msg.sender the owner of this smart
    * contract.
    */
-  function PonderAirdropToken () public {
+  constructor () public {
     supplyOwner = msg.sender;
     owners[supplyOwner] = true;
     accounts [supplyOwner] = totalSupply();
@@ -330,7 +331,7 @@ contract PonderAirdropToken is AbstractToken {
    * @return symbol of this token
    */
   function symbol () public pure returns (string result) {
-    return "PONA";
+    return "PONAIR";
   }
 
   /**
@@ -438,7 +439,7 @@ contract PonderAirdropToken is AbstractToken {
    * @param _value number of tokens to be allocated
    * @param _holds number of tokens to hold from transferring
    */  
-  function initAccounts (address [] _to, uint256 [] _value, uint256 [] _holds) public {
+  function initAccountsWithHolds (address [] _to, uint256 [] _value, uint256 [] _holds) public {
     setHolds(_to, _holds);
     initAccounts(_to, _value);
   }
@@ -499,6 +500,7 @@ contract PonderAirdropToken is AbstractToken {
    * Kill the token.
    */
   function kill() public { 
-    if (owners[msg.sender]) selfdestruct(msg.sender);
+    require (owners[msg.sender]);
+    selfdestruct(msg.sender);
   }
 }
